@@ -10,11 +10,13 @@ if [ ! -f /opt/alfresco/alf_data/foo.txt ]; then
 #    /opt/alfresco/alfresco.sh start;
 #    /waitready.sh;
 #    /opt/alfresco/alfresco.sh stop;
-     if [ -z ${CONTAINER_FUNCTION+x} ]; then 
+    if [ -z ${CONTAINER_FUNCTION+x} ]; then 
 	echo "Tomcat and Postgres running in same container"; 
-     else 
+    elif [ -z "${DO_NOT_CREATE_DB}"] || [ "${DO_NOT_CREATE_DB}"  = false ]; then
         echo "Creating DB from alfresco contaner";    
         export PGPASSWORD=mysecretpassword;/opt/alfresco/postgresql/bin/psql -h "$DB_CONTAINER_NAME" -p "5432" -U postgres < /create.sql
+else
+	echo "Unhandled DB Creation"
     fi
     echo "After fi1";   
     bash /tunesolr.sh;    
